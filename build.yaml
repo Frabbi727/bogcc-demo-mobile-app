@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Without this, a nested model inside a list or field is emitted as
+          # the object itself rather than a map, so toJson output cannot be fed
+          # back to fromJson and cannot be written to Hive. It is off by
+          # default and there is no case in this project where we want it off.
+          explicit_to_json: true
+          # Enum values are stored by name, so a reordered enum cannot silently
+          # reinterpret existing data.
+          field_rename: none
+          include_if_null: true
