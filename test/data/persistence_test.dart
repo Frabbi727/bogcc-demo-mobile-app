@@ -9,7 +9,6 @@ import 'package:bogcc_demo_mobile_app/domain/enums.dart';
 import 'package:bogcc_demo_mobile_app/domain/models/audit_entry.dart';
 import 'package:bogcc_demo_mobile_app/domain/models/holding.dart';
 import 'package:bogcc_demo_mobile_app/domain/models/messaging.dart';
-import 'package:bogcc_demo_mobile_app/domain/models/money.dart';
 import 'package:bogcc_demo_mobile_app/domain/models/session.dart';
 import 'package:bogcc_demo_mobile_app/domain/models/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
