@@ -1,4 +1,4 @@
-package com.example.bogcc_demo_mobile_app
+package bd.gov.bogura.bogcc.demo
 
 import io.flutter.embedding.android.FlutterActivity
 

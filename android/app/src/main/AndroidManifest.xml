@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Camera only: photographing a complaint, and scanning a certificate QR.
+         INTERNET is deliberately absent - see README. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
     <application
-        android:label="bogcc_demo_mobile_app"
+        android:label="@string/app_name"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

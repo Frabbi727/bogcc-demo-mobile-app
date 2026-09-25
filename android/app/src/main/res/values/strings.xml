@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher name. The (ডেমো) suffix must stay: this build carries no real data. -->
+    <string name="app_name">বগুড়া সিটি কর্পোরেশন (ডেমো)</string>
+</resources>
