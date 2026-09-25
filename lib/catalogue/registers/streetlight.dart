@@ -1,0 +1,122 @@
+import '../../domain/enums.dart';
+import 'register_config.dart';
+
+/// C1 — street light complaints, from a citizen's report to a finished repair.
+const streetlightRegister = RegisterConfig(
+  key: 'streetlight',
+  serviceKey: 'streetlight',
+  title: 'সড়কবাতি অভিযোগ ও মেরামত রেজিস্টার',
+  section: 'বিদ্যুৎ শাখা',
+  serialPrefix: 'SL',
+  description: 'নাগরিকের অভিযোগ থেকে মেরামত সম্পন্ন পর্যন্ত প্রতিটি সড়কবাতির হিসাব',
+  citizenFacing: true,
+  dateField: 'createdAt',
+  applicantFields:
+      ApplicantFields(name: 'complainant', mobile: 'complainantMobile'),
+  createRoles: [AppRole.operator, AppRole.electrician],
+  cancelRoles: [AppRole.licenceOfficer, AppRole.ceo],
+  steps: [
+    RegisterStep(
+      key: 'received',
+      label: 'অভিযোগ গৃহীত',
+      citizenLabel: 'অভিযোগ গৃহীত',
+    ),
+    RegisterStep(
+      key: 'assigned',
+      label: 'মিস্ত্রি নিযুক্ত',
+      citizenLabel: 'মিস্ত্রি পাঠানো হয়েছে',
+      actors: [AppRole.operator, AppRole.licenceOfficer],
+      requiredFields: ['technician'],
+    ),
+    RegisterStep(
+      key: 'repaired',
+      label: 'মেরামত সম্পন্ন',
+      citizenLabel: 'সমস্যার সমাধান হয়েছে',
+      actors: [AppRole.electrician],
+      requiredFields: ['repairDate', 'materials'],
+    ),
+  ],
+  fields: [
+    RegisterField(
+      key: 'poleNo',
+      label: 'খুঁটি নং',
+      type: FieldType.text,
+      showInBook: true,
+      citizenInput: true,
+      hint: 'জানা না থাকলে ফাঁকা রাখুন',
+    ),
+    RegisterField(
+      key: 'ward',
+      label: 'ওয়ার্ড',
+      type: FieldType.ward,
+      required: true,
+      showInBook: true,
+      citizenInput: true,
+    ),
+    RegisterField(
+      key: 'road',
+      label: 'রাস্তা / এলাকা',
+      type: FieldType.text,
+      required: true,
+      showInBook: true,
+      citizenInput: true,
+    ),
+    RegisterField(
+      key: 'faultType',
+      label: 'সমস্যার ধরন',
+      type: FieldType.select,
+      options: ['বাতি নষ্ট', 'তার ছেঁড়া', 'খুঁটি হেলে গেছে', 'সুইচ নষ্ট'],
+      required: true,
+      showInBook: true,
+      citizenInput: true,
+    ),
+    RegisterField(
+      key: 'photo',
+      label: 'সমস্যার ছবি',
+      type: FieldType.photo,
+      citizenInput: true,
+    ),
+    RegisterField(
+      key: 'description',
+      label: 'বিবরণ',
+      type: FieldType.textarea,
+      citizenInput: true,
+    ),
+    RegisterField(
+      key: 'complainant',
+      label: 'অভিযোগকারীর নাম',
+      type: FieldType.text,
+      required: true,
+      showInBook: true,
+      citizenInput: true,
+    ),
+    RegisterField(
+      key: 'complainantMobile',
+      label: 'অভিযোগকারীর মোবাইল',
+      type: FieldType.phone,
+      required: true,
+      citizenInput: true,
+    ),
+    RegisterField(
+      key: 'technician',
+      label: 'নিযুক্ত মিস্ত্রি',
+      type: FieldType.text,
+      showInBook: true,
+      staffOnly: true,
+    ),
+    RegisterField(
+      key: 'repairDate',
+      label: 'মেরামতের তারিখ',
+      type: FieldType.date,
+      showInBook: true,
+      staffOnly: true,
+    ),
+    RegisterField(
+      key: 'materials',
+      label: 'ব্যবহৃত মালামাল',
+      type: FieldType.text,
+      showInBook: true,
+      staffOnly: true,
+    ),
+  ],
+);
