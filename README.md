@@ -22,8 +22,13 @@ photographing a complaint and scanning a certificate QR.
 
 Flutter 3.44.6 / Dart 3.12.2.
 
-⚠️ **`freezed` is pinned to `^3.2.5`.** Version 4.x requires Dart `>=3.13.0`. Do not run
-`flutter pub upgrade --major-versions`.
+⚠️ **The codegen stack is pinned as a chain.** `freezed` 4.x needs Dart `>=3.13.0`, so freezed
+stays on `^3.2.5`; freezed 3.x caps `analyzer` below 11, which caps `build_runner` below 2.15.2.
+Raising any one of the three means raising the Flutter SDK first, and
+`flutter pub upgrade --major-versions` will break the resolution.
+
+This is also why **`riverpod_generator` is not used** — it requires `analyzer >=13`, which freezed
+3.x rules out. Providers are declared by hand, which costs a few lines each and nothing else.
 
 ⚠️ **Do not use the `pdf` package** for certificates, licences or receipts. It has no
 complex-script shaper, so Bengali conjuncts (ক্ত, স্থ, র্ম) and pre-base vowel reordering (ে, ি)
