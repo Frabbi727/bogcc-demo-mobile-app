@@ -24,6 +24,21 @@ Future<void> loadAppFonts() async {
     ],
   };
 
+  // MaterialIcons is in the same boat as the Bangla faces: `flutter test` does
+  // not load it, so every Icon in a golden records as an empty box and no icon
+  // regression can ever be caught. It lives in the SDK, which we locate from
+  // the running Dart executable rather than hardcoding a path.
+  final iconFont = _materialIconsFile();
+  if (iconFont != null) {
+    final loader = FontLoader('MaterialIcons')
+      ..addFont(
+        Future<ByteData>.value(
+          ByteData.sublistView(await iconFont.readAsBytes()),
+        ),
+      );
+    await loader.load();
+  }
+
   for (final entry in families.entries) {
     final loader = FontLoader(entry.key);
     for (final path in entry.value) {
@@ -34,4 +49,20 @@ Future<void> loadAppFonts() async {
     }
     await loader.load();
   }
+}
+
+/// `Platform.resolvedExecutable` is `<sdk>/bin/cache/dart-sdk/bin/dart`, so the
+/// material fonts sit four levels up. Returns null rather than throwing: a
+/// missing icon font should not fail a test suite that does not render icons.
+File? _materialIconsFile() {
+  var dir = File(Platform.resolvedExecutable).parent;
+  for (var i = 0; i < 8; i++) {
+    final candidate = File(
+      '${dir.path}/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
+    );
+    if (candidate.existsSync()) return candidate;
+    if (dir.parent.path == dir.path) break;
+    dir = dir.parent;
+  }
+  return null;
 }
