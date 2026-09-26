@@ -32,7 +32,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     await tester.pumpWidget(
-      BogccApp(
+      BogccAppHost(
         home: Scaffold(
           appBar: AppBar(title: const Text('বগুড়া সিটি কর্পোরেশন')),
           body: Column(
