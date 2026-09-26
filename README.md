@@ -18,6 +18,15 @@ any analytics SDK are permanently off the table. `flutter run` injects INTERNET 
 manifest only; the release manifest must stay without it. The only permission is `CAMERA`, for
 photographing a complaint and scanning a certificate QR.
 
+## Documentation
+
+| | |
+|---|---|
+| `doc/architecture.md` | How the app is put together, and the rules that are load-bearing |
+| `doc/decisions.md` | Why the awkward parts are that way, and what breaks if they are tidied |
+| `doc/parity-with-web.md` | What is ported from the web demo, what must stay identical, what to do when either side changes |
+| `doc/remaining-work.md` | Phase 1 leftovers and what Phase 2 needs |
+
 ## Toolchain
 
 Flutter 3.44.6 / Dart 3.12.2.
