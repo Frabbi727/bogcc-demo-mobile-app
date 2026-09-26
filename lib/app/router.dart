@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/auth/login_screen.dart';
 import '../features/auth/otp_screen.dart';
+import '../features/citizen/apply/apply_screen.dart';
 import '../features/citizen/home/citizen_home_screen.dart';
 import '../features/citizen/messages/messages_screen.dart';
 import '../features/citizen/profile/profile_screen.dart';
@@ -107,6 +108,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                   builder: (_, state) => ServiceCharterScreen(
                     serviceKey: state.pathParameters['key']!,
                   ),
+                  routes: [
+                    GoRoute(
+                      path: 'apply',
+                      parentNavigatorKey: _rootKey,
+                      builder: (_, state) => ApplyScreen(
+                        serviceKey: state.pathParameters['key']!,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

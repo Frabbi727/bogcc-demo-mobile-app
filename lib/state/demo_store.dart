@@ -108,6 +108,19 @@ class DemoState {
   }
 }
 
+/// Replaces the element matching [id], or appends it when it is new.
+///
+/// Written as a function rather than inline `cond ? [...] : [...]..[i] = x`:
+/// the cascade there binds to the *whole* conditional, not to the else branch,
+/// so the assignment also ran on the append path with an index of -1.
+List<T> _upsert<T>(List<T> items, T value, bool Function(T) matches) {
+  final index = items.indexWhere(matches);
+  if (index < 0) return [...items, value];
+  final next = [...items];
+  next[index] = value;
+  return next;
+}
+
 /// Owns the state and every write to it.
 class DemoStore extends Notifier<DemoState> {
   DemoStore(this._repos, this._sequences, this._initial);
@@ -125,41 +138,33 @@ class DemoStore extends Notifier<DemoState> {
   /* ---- write-through helpers used by the action files ---- */
 
   Future<void> putEntry(RegisterEntry entry) async {
-    final i = state.entries.indexWhere((e) => e.id == entry.id);
     state = state.copyWith(
-      entries: i < 0
-          ? [...state.entries, entry]
-          : [...state.entries]..[i] = entry,
+      entries: _upsert(state.entries, entry, (e) => e.id == entry.id),
     );
     await _repos.entries.write(entry);
   }
 
   Future<void> putLicence(Licence licence) async {
-    final i = state.licences.indexWhere((l) => l.id == licence.id);
     state = state.copyWith(
-      licences: i < 0
-          ? [...state.licences, licence]
-          : [...state.licences]..[i] = licence,
+      licences: _upsert(state.licences, licence, (l) => l.id == licence.id),
     );
     await _repos.licences.write(licence);
   }
 
   Future<void> putHolding(Holding holding) async {
-    final i = state.holdings.indexWhere((h) => h.holdingNo == holding.holdingNo);
     state = state.copyWith(
-      holdings: i < 0
-          ? [...state.holdings, holding]
-          : [...state.holdings]..[i] = holding,
+      holdings: _upsert(
+        state.holdings,
+        holding,
+        (h) => h.holdingNo == holding.holdingNo,
+      ),
     );
     await _repos.holdings.write(holding);
   }
 
   Future<void> putPayment(Payment payment) async {
-    final i = state.payments.indexWhere((p) => p.id == payment.id);
     state = state.copyWith(
-      payments: i < 0
-          ? [...state.payments, payment]
-          : [...state.payments]..[i] = payment,
+      payments: _upsert(state.payments, payment, (p) => p.id == payment.id),
     );
     await _repos.payments.write(payment);
   }
@@ -170,12 +175,12 @@ class DemoStore extends Notifier<DemoState> {
   }
 
   Future<void> putNotification(AppNotification notification) async {
-    final i =
-        state.notifications.indexWhere((n) => n.id == notification.id);
     state = state.copyWith(
-      notifications: i < 0
-          ? [...state.notifications, notification]
-          : [...state.notifications]..[i] = notification,
+      notifications: _upsert(
+        state.notifications,
+        notification,
+        (n) => n.id == notification.id,
+      ),
     );
     await _repos.notifications.write(notification);
   }

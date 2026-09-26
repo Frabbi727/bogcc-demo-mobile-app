@@ -23,8 +23,7 @@ abstract final class Routes {
 
   // --- citizen leaves ---
   static const serviceDetail = '/nagorik/services/:key';
-  static const apply = '/nagorik/apply/:key';
-  static const applyDone = '/nagorik/apply/:key/done';
+  static const apply = '/nagorik/services/:key/apply';
   static const requestDetail = '/nagorik/track/:id';
   static const holding = '/nagorik/holding';
   static const notices = '/nagorik/notices';
@@ -38,7 +37,7 @@ abstract final class Routes {
   static const officeProfile = '/office/me';
 
   static String serviceDetailFor(String key) => '/nagorik/services/$key';
-  static String applyFor(String key) => '/nagorik/apply/$key';
+  static String applyFor(String key) => '/nagorik/services/$key/apply';
   static String requestDetailFor(String id) => '/nagorik/track/$id';
   static String documentFor(String kind, String id) => '/document/$kind/$id';
   static String receiptFor(String id) => '/receipt/$id';
