@@ -43,6 +43,10 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.2.5 # NOT ^4 — requires Dart >=3.13.0
   json_serializable: ^6.8.0
+  # Needed to fake path_provider in a test; both are transitive at runtime, but
+  # a test that implements the platform interface must depend on them directly.
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
 
 flutter:
   uses-material-design: true

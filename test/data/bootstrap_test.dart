@@ -1,11 +1,7 @@
 import 'dart:io';
 
 import 'package:bogcc_demo_mobile_app/app/bootstrap.dart';
-import 'package:bogcc_demo_mobile_app/data/local/hive_boxes.dart';
-import 'package:bogcc_demo_mobile_app/data/local/meta_store.dart';
-import 'package:bogcc_demo_mobile_app/data/repositories/repositories.dart';
 import 'package:bogcc_demo_mobile_app/data/seed/seed_data.dart';
-import 'package:bogcc_demo_mobile_app/state/demo_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
