@@ -1,7 +1,19 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Camera only: photographing a complaint, and scanning a certificate QR.
-         INTERNET is deliberately absent - see README. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Camera only: photographing a complaint, and scanning a certificate QR. -->
     <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- The app holds all of its data on the device and must stay provably
+         unable to phone home. These are not declared here; they arrive through
+         mobile_scanner's ML Kit dependency, which drags in Google's
+         transport-backend-cct telemetry uploader. Stripping them at merge is
+         what keeps the guarantee true: QR scanning uses the on-device model and
+         does not need either. `flutter run` still injects INTERNET into the
+         debug manifest, which is expected and does not affect release. -->
+    <uses-permission android:name="android.permission.INTERNET"
+        tools:node="remove"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:node="remove"/>
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"
