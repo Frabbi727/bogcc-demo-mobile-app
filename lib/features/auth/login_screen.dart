@@ -3,15 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
-import '../../catalogue/users.dart';
+// Phase 2: the office face is disabled for this demo. See doc/remaining-work.md.
+// import '../../catalogue/users.dart';
 import '../../core/bn/bn.dart';
-import '../../domain/enums.dart';
+// Phase 2: the office face is disabled for this demo. See doc/remaining-work.md.
+// import '../../domain/enums.dart';
 import '../../shell/demo_banner.dart';
-import '../../state/session_controller.dart';
+// Phase 2: the office face is disabled for this demo. See doc/remaining-work.md.
+// import '../../state/session_controller.dart';
 import '../../ui/theme/colors.dart';
 import '../../ui/theme/spacing.dart';
 
-/// The front door. Choose নাগরিক or অফিস, and the whole app reshapes itself.
+/// The front door. Only the নাগরিক face is offered in this demo; the অফিস face
+/// is commented out below, waiting on Phase 2.
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -21,7 +25,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _mobile = TextEditingController();
-  bool _office = false;
+  // Phase 2: the office face is disabled for this demo. See doc/remaining-work.md.
+  // bool _office = false;
   String? _error;
 
   @override
@@ -41,10 +46,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     context.push('${Routes.otp}?mobile=$mobile');
   }
 
-  Future<void> _signInAsOffice(AppRole role) async {
-    await ref.read(sessionProvider.notifier).signInAsOffice(role);
-    if (mounted) context.go(Routes.officeHome);
-  }
+  // Phase 2: the office face is disabled for this demo. See doc/remaining-work.md.
+  // Future<void> _signInAsOffice(AppRole role) async {
+  //   await ref.read(sessionProvider.notifier).signInAsOffice(role);
+  //   if (mounted) context.go(Routes.officeHome);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -65,26 +71,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Text('ডিজিটাল সেবা ব্যবস্থা', style: text.bodySmall),
                   const SizedBox(height: Insets.xl),
 
-                  SegmentedButton<bool>(
-                    segments: const [
-                      ButtonSegment(
-                        value: false,
-                        label: Text('নাগরিক'),
-                        icon: Icon(Icons.person_outline),
-                      ),
-                      ButtonSegment(
-                        value: true,
-                        label: Text('অফিস'),
-                        icon: Icon(Icons.badge_outlined),
-                      ),
-                    ],
-                    selected: {_office},
-                    onSelectionChanged: (s) =>
-                        setState(() => _office = s.first),
-                  ),
-                  const SizedBox(height: Insets.xl),
+                  // Phase 2: the office face is disabled for this demo. See
+                  // doc/remaining-work.md. Uncomment to bring the নাগরিক/অফিস
+                  // switch back.
+                  // SegmentedButton<bool>(
+                  //   segments: const [
+                  //     ButtonSegment(
+                  //       value: false,
+                  //       label: Text('নাগরিক'),
+                  //       icon: Icon(Icons.person_outline),
+                  //     ),
+                  //     ButtonSegment(
+                  //       value: true,
+                  //       label: Text('অফিস'),
+                  //       icon: Icon(Icons.badge_outlined),
+                  //     ),
+                  //   ],
+                  //   selected: {_office},
+                  //   onSelectionChanged: (s) =>
+                  //       setState(() => _office = s.first),
+                  // ),
+                  // const SizedBox(height: Insets.xl),
 
-                  if (_office) ..._officeSection(text) else ..._citizenSection(),
+                  // if (_office) ..._officeSection(text) else ..._citizenSection(),
+                  ..._citizenSection(),
                 ],
               ),
             ),
@@ -121,61 +131,63 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
       ];
 
-  List<Widget> _officeSection(TextTheme text) => [
-        Text('আপনার দপ্তর বেছে নিন', style: text.titleMedium),
-        const SizedBox(height: Insets.sm),
-        const _Hint('ডেমোতে কোনো পাসওয়ার্ড নেই। প্রতিটি দপ্তর নিজের কাজটুকুই দেখতে পায়।'),
-        const SizedBox(height: Insets.md),
-        for (final role in officeRoleOrder)
-          Padding(
-            padding: const EdgeInsets.only(bottom: Insets.sm),
-            child: _RoleCard(
-              user: userFor(role),
-              onTap: () => _signInAsOffice(role),
-            ),
-          ),
-      ];
+  // Phase 2: the office face is disabled for this demo. See doc/remaining-work.md.
+  // List<Widget> _officeSection(TextTheme text) => [
+  //       Text('আপনার দপ্তর বেছে নিন', style: text.titleMedium),
+  //       const SizedBox(height: Insets.sm),
+  //       const _Hint('ডেমোতে কোনো পাসওয়ার্ড নেই। প্রতিটি দপ্তর নিজের কাজটুকুই দেখতে পায়।'),
+  //       const SizedBox(height: Insets.md),
+  //       for (final role in officeRoleOrder)
+  //         Padding(
+  //           padding: const EdgeInsets.only(bottom: Insets.sm),
+  //           child: _RoleCard(
+  //             user: userFor(role),
+  //             onTap: () => _signInAsOffice(role),
+  //           ),
+  //         ),
+  //     ];
 }
 
-class _RoleCard extends StatelessWidget {
-  const _RoleCard({required this.user, required this.onTap});
-
-  final AppUser user;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(Radii.md),
-        child: Padding(
-          padding: const EdgeInsets.all(Insets.md),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(user.title, style: text.titleSmall),
-                    Text(
-                      '${user.name} · ${user.designation}',
-                      style: text.bodySmall,
-                    ),
-                    const SizedBox(height: Insets.xs),
-                    Text(user.hint, style: text.labelSmall),
-                  ],
-                ),
-              ),
-              const Icon(Icons.chevron_right, color: AppColors.muted),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+// Phase 2: the office face is disabled for this demo. See doc/remaining-work.md.
+// class _RoleCard extends StatelessWidget {
+//   const _RoleCard({required this.user, required this.onTap});
+//
+//   final AppUser user;
+//   final VoidCallback onTap;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final text = Theme.of(context).textTheme;
+//     return Card(
+//       child: InkWell(
+//         onTap: onTap,
+//         borderRadius: BorderRadius.circular(Radii.md),
+//         child: Padding(
+//           padding: const EdgeInsets.all(Insets.md),
+//           child: Row(
+//             children: [
+//               Expanded(
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text(user.title, style: text.titleSmall),
+//                     Text(
+//                       '${user.name} · ${user.designation}',
+//                       style: text.bodySmall,
+//                     ),
+//                     const SizedBox(height: Insets.xs),
+//                     Text(user.hint, style: text.labelSmall),
+//                   ],
+//                 ),
+//               ),
+//               const Icon(Icons.chevron_right, color: AppColors.muted),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _Hint extends StatelessWidget {
   const _Hint(this.text);

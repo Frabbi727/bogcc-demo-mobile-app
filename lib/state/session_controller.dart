@@ -37,8 +37,11 @@ class SessionController extends Notifier<Session> {
   MetaStore get _meta => ref.read(metaStoreProvider);
 
   @override
-  Session build() =>
-      Session(office: _meta.officeSession, citizen: _meta.citizenSession);
+  // Phase 2: the office face is disabled for this demo, so a desk session left
+  // on the device is ignored rather than restored. See doc/remaining-work.md.
+  // Session build() =>
+  //     Session(office: _meta.officeSession, citizen: _meta.citizenSession);
+  Session build() => Session(citizen: _meta.citizenSession);
 
   /// Signs in at an office desk.
   ///
