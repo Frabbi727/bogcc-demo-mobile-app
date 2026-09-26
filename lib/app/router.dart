@@ -17,6 +17,8 @@ import '../features/auth/otp_screen.dart';
 import '../features/citizen/apply/apply_screen.dart';
 import '../features/citizen/home/citizen_home_screen.dart';
 import '../features/citizen/messages/messages_screen.dart';
+import '../features/citizen/notices/notice_list_screen.dart';
+import '../features/citizen/profile/about_screen.dart';
 import '../features/citizen/profile/profile_screen.dart';
 import '../features/citizen/services/service_charter_screen.dart';
 import '../features/citizen/services/service_list_screen.dart';
@@ -84,6 +86,37 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.otp,
         builder: (_, state) => OtpScreen(
           mobile: state.uri.queryParameters['mobile'] ?? '',
+        ),
+      ),
+
+      // Citizen screens that sit outside the tab shell, so they open over it
+      // with a back arrow rather than swapping a tab underneath the user.
+      GoRoute(
+        path: Routes.notices,
+        builder: (_, _) => const NoticeListScreen(),
+      ),
+      GoRoute(
+        path: Routes.about,
+        builder: (_, _) => const AboutScreen(),
+      ),
+      GoRoute(
+        path: Routes.holding,
+        builder: (_, _) => Scaffold(
+          appBar: AppBar(title: const Text('হোল্ডিং কর')),
+          body: const ComingSoonScreen(
+            title: 'হোল্ডিং কর',
+            detail: 'হোল্ডিং নম্বর দিয়ে বকেয়া দেখা ও অনলাইনে পরিশোধ।',
+          ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.verify,
+        builder: (_, _) => Scaffold(
+          appBar: AppBar(title: const Text('সনদ যাচাই')),
+          body: const ComingSoonScreen(
+            title: 'সনদ যাচাই',
+            detail: 'সনদের QR স্ক্যান করে বা নম্বর দিয়ে সত্যতা যাচাই।',
+          ),
         ),
       ),
 

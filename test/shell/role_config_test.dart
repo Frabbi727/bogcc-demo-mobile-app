@@ -49,6 +49,9 @@ void main() {
   });
 
   group('routing agreement', () {
+    // Every path lib/app/router.dart registers. A tile pointing outside this
+    // set is an error page at runtime rather than a compile failure, which is
+    // exactly the bug this guards.
     const known = {
       Routes.citizenHome,
       Routes.services,
