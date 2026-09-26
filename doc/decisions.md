@@ -93,14 +93,34 @@ a frozen app rather than an error.
 
 ## Known gap: widget tests that drive the router
 
-A widget test that boots the app and signs in **hangs** rather than failing,
-somewhere in booting Hive through a faked `path_provider` per test. The logic
-is covered by unit tests (`redirect_test.dart`, `entry_actions_test.dart`) and
-the flow was verified by running the app on an emulator.
+A widget test file that boots the app and signs in was written and then
+removed. What it actually did, from the one full run that completed:
 
-Worth solving before Phase 2 leans harder on widget tests. First thing to try:
-boot once per file in `setUpAll` rather than per test, and bound `pumpAndSettle`
-so a non-settling frame fails fast.
+- 6 tests passed in about a second — everything up to and including the OTP
+  screen.
+- The **first** test that asserts on the citizen shell failed **immediately**
+  with `Found 0 widgets with text "নাগরিক কর্নার"`, i.e. the tree was still on
+  the OTP screen.
+- Each **subsequent** test then took about ten minutes, which is
+  `pumpAndSettle`'s default timeout, suggesting state leaking between the
+  per-test Hive boots rather than anything in the app.
+
+The most likely cause of the first failure is test authoring rather than a
+bug: `signInAsCitizen` awaits Hive writes before calling `context.go`, and
+`pumpAndSettle` pumps frames without waiting on that I/O, so the assertion runs
+while the OTP screen is still mounted. **This has not been proven** — an
+attempt to probe it with bounded pumps did not produce output either.
+
+What is known for certain: the same flow works on a device. It was driven by
+hand on an emulator — mobile number, OTP, shell, tabs, apply, tracking number,
+track list, message badge — with a screenshot at each step.
+
+Do not read this as "the router is broken". Read it as "this harness is not yet
+trustworthy for flows that cross a navigation boundary". Before Phase 2 leans
+on widget tests, the things to try are: boot once per file in `setUpAll` rather
+than per test; await the sign-in future explicitly rather than relying on
+`pumpAndSettle`; and pass a short timeout to `pumpAndSettle` so a non-settling
+frame fails in seconds instead of ten minutes.
 
 ## Test-harness traps already paid for
 

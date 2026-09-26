@@ -70,8 +70,9 @@ The Mayor dashboard is the largest single piece; the web's `src/lib/mayor.ts` is
 
 ## Housekeeping
 
-- Solve the widget-test hang (see `decisions.md`) before Phase 2 relies on
-  widget tests.
+- Make widget tests trustworthy across navigation boundaries before Phase 2
+  relies on them — see the "Known gap" entry in `decisions.md` for what was
+  actually observed and the three things to try.
 - The release APK is 72.8 MB, mostly ML Kit from `mobile_scanner`. If QR
   scanning ends up not being worth that, dropping the package also removes the
   telemetry dependency the manifest currently strips.
