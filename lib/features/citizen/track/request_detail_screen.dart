@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/routes.dart';
 import '../../../catalogue/registers/registers.dart';
 import '../../../catalogue/services.dart';
 import '../../../core/bn/bn.dart';
@@ -9,6 +13,7 @@ import '../../../domain/models/base_record.dart';
 import '../../../domain/models/register_entry.dart';
 import '../../../domain/rules/sla.dart';
 import '../../../shell/demo_banner.dart';
+import '../../../state/actions/payment_actions.dart';
 import '../../../state/providers.dart';
 import '../../../ui/theme/colors.dart';
 import '../../../ui/theme/spacing.dart';
@@ -65,6 +70,9 @@ class RequestDetailScreen extends ConsumerWidget {
                   steps: _stepsFor(record, register?.statusKeys, cancelled),
                 ),
                 const SizedBox(height: Insets.xl),
+
+                if (!cancelled && record is RegisterEntry && register != null)
+                  _PayAction(entry: record, register: register),
 
                 if (record is RegisterEntry && register != null) ...[
                   Text('আবেদনের তথ্য', style: text.titleMedium),
@@ -299,6 +307,93 @@ class _CancelledNotice extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The "pay the fee" call to action.
+///
+/// Offered only while the fee is genuinely outstanding: the register declares
+/// which of its steps is reached by paying, so this asks the config rather
+/// than assuming the payment step is second. Once that step is reached — by
+/// the gateway or by the counter — there is nothing left to pay and the button
+/// disappears rather than charging twice.
+class _PayAction extends ConsumerStatefulWidget {
+  const _PayAction({required this.entry, required this.register});
+
+  final RegisterEntry entry;
+  final RegisterConfig register;
+
+  @override
+  ConsumerState<_PayAction> createState() => _PayActionState();
+}
+
+class _PayActionState extends ConsumerState<_PayAction> {
+  bool _starting = false;
+
+  Future<void> _start() async {
+    setState(() => _starting = true);
+    final payment = await payForEntry(
+      store: ref.read(demoStoreProvider.notifier),
+      entryId: widget.entry.id,
+    );
+    if (!mounted) return;
+    setState(() => _starting = false);
+    if (payment != null) unawaited(context.push(Routes.payFor(payment.id)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final entry = widget.entry;
+    final feeLines = entry.feeLines;
+    final payStep = widget.register.steps.where((s) => s.payment).firstOrNull;
+
+    final owed = feeLines != null &&
+        feeLines.isNotEmpty &&
+        payStep != null &&
+        entry.receiptId == null &&
+        !entry.history.any((h) => h.status == payStep.key);
+    if (!owed) return const SizedBox.shrink();
+
+    final text = Theme.of(context).textTheme;
+    final total = feeLines.fold(0, (sum, l) => sum + l.amount);
+
+    return Card(
+      color: AppColors.forest50,
+      child: Padding(
+        padding: const EdgeInsets.all(Insets.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('ফি বাকি আছে', style: text.titleSmall),
+            const SizedBox(height: Insets.xs),
+            Text(
+              'ফি পরিশোধের পর আবেদনটি পরবর্তী ধাপে যাবে।',
+              style: text.bodySmall?.copyWith(color: AppColors.muted),
+            ),
+            const SizedBox(height: Insets.md),
+            for (final line in feeLines)
+              Padding(
+                padding: const EdgeInsets.only(bottom: Insets.xs),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(child: Text(line.label, style: text.bodyMedium)),
+                    Text(formatTaka(line.amount), style: text.bodyMedium),
+                  ],
+                ),
+              ),
+            const SizedBox(height: Insets.sm),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: _starting ? null : _start,
+                child: Text('${formatTaka(total)} অনলাইনে পরিশোধ করুন'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

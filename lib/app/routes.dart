@@ -14,6 +14,10 @@ abstract final class Routes {
   static const document = '/document'; // /document/:kind/:id
   static const receipt = '/receipt'; // /receipt/:id
 
+  /// The mock gateway. Public because a payment link is a document of its
+  /// own: it is opened from an SMS as often as from inside the app.
+  static const pay = '/pay'; // /pay/:paymentId
+
   // --- citizen shell branches ---
   static const citizenHome = '/nagorik';
   static const services = '/nagorik/services';
@@ -41,4 +45,5 @@ abstract final class Routes {
   static String requestDetailFor(String id) => '/nagorik/track/$id';
   static String documentFor(String kind, String id) => '/document/$kind/$id';
   static String receiptFor(String id) => '/receipt/$id';
+  static String payFor(String paymentId) => '/pay/$paymentId';
 }

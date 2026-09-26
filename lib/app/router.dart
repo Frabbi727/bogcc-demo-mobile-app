@@ -18,6 +18,8 @@ import '../features/citizen/apply/apply_screen.dart';
 import '../features/citizen/home/citizen_home_screen.dart';
 import '../features/citizen/messages/messages_screen.dart';
 import '../features/citizen/notices/notice_list_screen.dart';
+import '../features/citizen/payment/pay_screen.dart';
+import '../features/citizen/payment/receipt_screen.dart';
 import '../features/citizen/profile/about_screen.dart';
 import '../features/citizen/profile/profile_screen.dart';
 import '../features/citizen/services/service_charter_screen.dart';
@@ -40,7 +42,8 @@ bool isPublicRoute(String location) =>
     location.startsWith(Routes.login) ||
     location.startsWith(Routes.verify) ||
     location.startsWith(Routes.document) ||
-    location.startsWith(Routes.receipt);
+    location.startsWith(Routes.receipt) ||
+    location.startsWith(Routes.pay);
 
 /// Where a request for [location] should actually go, or null to allow it.
 ///
@@ -109,6 +112,22 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ),
       ),
+      // The gateway and the receipt it produces. Both public: a payment link
+      // and a receipt are each opened from an SMS as often as from inside the
+      // app, and the person holding a receipt need not be signed in.
+      GoRoute(
+        path: '${Routes.pay}/:paymentId',
+        builder: (_, state) => PayScreen(
+          paymentId: state.pathParameters['paymentId']!,
+        ),
+      ),
+      GoRoute(
+        path: '${Routes.receipt}/:id',
+        builder: (_, state) => ReceiptScreen(
+          receiptId: state.pathParameters['id']!,
+        ),
+      ),
+
       GoRoute(
         path: Routes.verify,
         builder: (_, _) => Scaffold(

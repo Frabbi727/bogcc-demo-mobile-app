@@ -135,6 +135,13 @@ class DemoStore extends Notifier<DemoState> {
   @override
   DemoState build() => _initial;
 
+  /// The current state, readable from the action files.
+  ///
+  /// `state` itself is `@protected` on [Notifier], and the actions live outside
+  /// this class on purpose — they are grouped by what they do, not by which
+  /// notifier holds the data. This is the one door they read through.
+  DemoState get current => state;
+
   /* ---- write-through helpers used by the action files ---- */
 
   Future<void> putEntry(RegisterEntry entry) async {
