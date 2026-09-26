@@ -115,6 +115,27 @@ ThemeData buildAppTheme() {
       labelTextStyle: WidgetStatePropertyAll(text.labelSmall),
     ),
 
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        // Left unstyled it falls back to Material's blue, which is the one
+        // colour on screen that belongs to no part of this palette.
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? AppColors.forest700
+              : AppColors.page,
+        ),
+        foregroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? Colors.white
+              : AppColors.ink,
+        ),
+        side: const WidgetStatePropertyAll(
+          BorderSide(color: AppColors.rule),
+        ),
+        textStyle: WidgetStatePropertyAll(text.labelLarge),
+      ),
+    ),
+
     listTileTheme: const ListTileThemeData(
       textColor: AppColors.ink,
       iconColor: AppColors.muted,

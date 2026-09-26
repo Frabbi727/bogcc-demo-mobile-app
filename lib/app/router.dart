@@ -17,7 +17,9 @@ import '../features/auth/otp_screen.dart';
 import '../features/citizen/home/citizen_home_screen.dart';
 import '../features/citizen/messages/messages_screen.dart';
 import '../features/citizen/profile/profile_screen.dart';
+import '../features/citizen/services/service_charter_screen.dart';
 import '../features/citizen/services/service_list_screen.dart';
+import '../features/citizen/track/request_detail_screen.dart';
 import '../features/citizen/track/track_screen.dart';
 import '../features/office/coming_soon_screen.dart';
 import '../shell/app_shell.dart';
@@ -97,12 +99,31 @@ final routerProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: Routes.services,
               builder: (_, _) => const ServiceListScreen(),
+              routes: [
+                GoRoute(
+                  // Relative to the parent, so this is /nagorik/services/:key.
+                  path: ':key',
+                  parentNavigatorKey: _rootKey,
+                  builder: (_, state) => ServiceCharterScreen(
+                    serviceKey: state.pathParameters['key']!,
+                  ),
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: Routes.track,
               builder: (_, _) => const TrackScreen(),
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  parentNavigatorKey: _rootKey,
+                  builder: (_, state) => RequestDetailScreen(
+                    recordId: state.pathParameters['id']!,
+                  ),
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [

@@ -104,15 +104,19 @@ class RequestCard extends StatelessWidget {
               const SizedBox(height: Insets.xs),
               Text(toBnDigits(record.trackingNo), style: text.labelSmall),
               const SizedBox(height: Insets.sm),
-              Row(
+              // Wrap rather than Row: a long status label next to an overdue
+              // badge and a timestamp overflows at phone width, and clipping
+              // the date is worse than letting the line wrap.
+              Wrap(
+                spacing: Insets.sm,
+                runSpacing: Insets.xs,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   ToneBadge(
                     label: label,
                     tone: cancelled ? Tone.danger : Tone.info,
                   ),
-                  const SizedBox(width: Insets.sm),
                   SlaBadge(status: slaStatus(record)),
-                  const Spacer(),
                   Text(timeAgoBn(record.createdAt), style: text.labelSmall),
                 ],
               ),
