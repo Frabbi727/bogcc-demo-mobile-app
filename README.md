@@ -52,6 +52,30 @@ lib/
 
 `test/` mirrors `lib/` one-to-one.
 
+## What is built
+
+**The citizen side works end to end**: sign in with a mobile number and a
+simulated OTP, read the citizen charter, apply for a service through a form
+generated from its register config, get a tracking number, follow the
+application's progress step by step, and read the messages it generates.
+
+| | |
+|---|---|
+| Sign in | নাগরিক (mobile + simulated OTP) and অফিস (all ten desks, no password) |
+| Citizen charter | All 8 services with charter time, fee, documents and steps |
+| Apply | Config-driven form for the 4 citizen-facing registers |
+| Track | My applications, status, SLA, step-by-step progress |
+| Messages | Simulated SMS inbox with unread badge |
+| Notices, about | Built |
+| ডেমো রিসেট | Wipes and regenerates today's dataset |
+| Office desks | Each of the ten gets its own shell, tabs and inbox spec; the screens behind them are Phase 2 |
+
+Still to build, in rough order: the mock payment gateway, the printable
+certificate and licence (as a widget exported to PNG — see the `pdf` warning
+above), QR verification, holding tax lookup and payment, and the star rating on
+a finished service. Holding tax and verification are registered as labelled
+placeholders so nothing dead-ends.
+
 ## Develop
 
 ```sh
