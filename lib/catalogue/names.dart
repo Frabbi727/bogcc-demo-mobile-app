@@ -3,8 +3,9 @@
 /// EVERY person, business, vehicle and trade name here is fictional. Only the
 /// Bogura road and area names are real.
 ///
-/// Generated from the web demo's `src/data/names.ts` rather than retyped, so
-/// no Bangla string is mistranscribed.
+/// Generated from the web demo's `src/data/names.ts` by
+/// `tool/parity/gen-names.mts` rather than retyped, so no Bangla string is
+/// mistranscribed. Regenerate rather than hand-editing.
 library;
 
 const maleNames = <String>[
