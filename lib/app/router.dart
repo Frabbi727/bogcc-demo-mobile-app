@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/login_screen.dart';
 import '../features/auth/otp_screen.dart';
 import '../features/citizen/apply/apply_screen.dart';
+import '../features/citizen/documents/document_screen.dart';
 import '../features/citizen/home/citizen_home_screen.dart';
 import '../features/citizen/messages/messages_screen.dart';
 import '../features/citizen/notices/notice_list_screen.dart';
@@ -125,6 +126,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '${Routes.receipt}/:id',
         builder: (_, state) => ReceiptScreen(
           receiptId: state.pathParameters['id']!,
+        ),
+      ),
+      GoRoute(
+        path: '${Routes.document}/:kind/:id',
+        builder: (_, state) => DocumentScreen(
+          kind: state.pathParameters['kind']!,
+          id: state.pathParameters['id']!,
         ),
       ),
 

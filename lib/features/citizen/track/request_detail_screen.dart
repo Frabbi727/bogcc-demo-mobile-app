@@ -12,6 +12,7 @@ import '../../../domain/enums.dart';
 import '../../../domain/models/base_record.dart';
 import '../../../domain/models/register_entry.dart';
 import '../../../domain/rules/sla.dart';
+import '../../../engine/field_display.dart';
 import '../../../shell/demo_banner.dart';
 import '../../../state/actions/payment_actions.dart';
 import '../../../state/providers.dart';
@@ -19,6 +20,7 @@ import '../../../ui/theme/colors.dart';
 import '../../../ui/theme/spacing.dart';
 import '../../../ui/widgets/status_badge.dart';
 import '../../../ui/widgets/vertical_stepper.dart';
+import '../documents/document_screen.dart';
 
 /// One application, as the citizen sees it.
 ///
@@ -74,6 +76,9 @@ class RequestDetailScreen extends ConsumerWidget {
                 if (!cancelled && record is RegisterEntry && register != null)
                   _PayAction(entry: record, register: register),
 
+                if (!cancelled && record is RegisterEntry && register != null)
+                  _DocumentAction(entry: record, register: register),
+
                 if (record is RegisterEntry && register != null) ...[
                   Text('আবেদনের তথ্য', style: text.titleMedium),
                   const SizedBox(height: Insets.sm),
@@ -87,7 +92,7 @@ class RequestDetailScreen extends ConsumerWidget {
                         ))
                           _DataRow(
                             label: field.label,
-                            value: _display(record, field.key, field.type),
+                            value: displayField(field, record.data[field.key]),
                           ),
                       ],
                     ),
@@ -145,19 +150,6 @@ class RequestDetailScreen extends ConsumerWidget {
     return steps;
   }
 
-  String _display(RegisterEntry entry, String key, FieldType type) {
-    final Object? value = entry.data[key];
-    if (value == null) return '—';
-    return switch (type) {
-      FieldType.heirs =>
-        '${toBnDigits(entry.heirs(key).length)} জন ওয়ারিশ',
-      FieldType.ward => 'ওয়ার্ড ${toBnDigits(value)}',
-      FieldType.number || FieldType.phone || FieldType.nid =>
-        toBnDigits(value),
-      FieldType.date => toBnDigits(value),
-      _ => value.toString(),
-    };
-  }
 }
 
 class _Header extends StatelessWidget {
@@ -393,6 +385,44 @@ class _PayActionState extends ConsumerState<_PayAction> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The "download your certificate" link.
+///
+/// Shown only once the certificate actually exists: the register declares one
+/// ([RegisterConfig.printable]), the final step has been reached, and the fee
+/// behind it was collected. The document screen enforces the fee gate too —
+/// this only decides whether to offer the link.
+class _DocumentAction extends StatelessWidget {
+  const _DocumentAction({required this.entry, required this.register});
+
+  final RegisterEntry entry;
+  final RegisterConfig register;
+
+  @override
+  Widget build(BuildContext context) {
+    final issued = entry.status == register.steps.last.key;
+    if (!register.printable ||
+        register.certificate == null ||
+        !issued ||
+        entry.receiptId == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Insets.lg),
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton.icon(
+          onPressed: () => context.push(
+            Routes.documentFor(documentKindCertificate, entry.id),
+          ),
+          icon: const Icon(Icons.description_outlined, size: 18),
+          label: const Text('সনদ দেখুন ও সংরক্ষণ করুন'),
         ),
       ),
     );
