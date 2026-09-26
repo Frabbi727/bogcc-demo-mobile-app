@@ -28,6 +28,8 @@ import '../features/citizen/services/service_list_screen.dart';
 import '../features/citizen/track/request_detail_screen.dart';
 import '../features/citizen/track/track_screen.dart';
 import '../features/office/coming_soon_screen.dart';
+import '../features/verify/scan_screen.dart';
+import '../features/verify/verify_screen.dart';
 import '../shell/app_shell.dart';
 import '../state/session_controller.dart';
 import 'routes.dart';
@@ -138,13 +140,20 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       GoRoute(
         path: Routes.verify,
-        builder: (_, _) => Scaffold(
-          appBar: AppBar(title: const Text('সনদ যাচাই')),
-          body: const ComingSoonScreen(
-            title: 'সনদ যাচাই',
-            detail: 'সনদের QR স্ক্যান করে বা নম্বর দিয়ে সত্যতা যাচাই।',
-          ),
+        // A scanned QR arrives as the whole URL, query string included, so the
+        // screen is handed the Uri rather than a parsed number.
+        builder: (_, state) => VerifyScreen(
+          scanned: state.uri.hasQuery ? state.uri : null,
         ),
+        routes: [
+          GoRoute(
+            // Relative to the parent, so this is /verify/scan. It pops the raw
+            // string it read back to the verify screen, which decides what it
+            // means.
+            path: 'scan',
+            builder: (_, _) => const ScanScreen(),
+          ),
+        ],
       ),
 
       StatefulShellRoute.indexedStack(

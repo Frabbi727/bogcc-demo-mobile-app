@@ -56,7 +56,7 @@ lib/
   shell/      ShellConfig -> nav + home tiles, driven by role
   ui/         theme tokens and shared widgets
   engine/     config-driven register form / detail / book screens
-  features/   auth, citizen/*, verify, office (Phase 2)
+  features/   auth, citizen/*, verify (public: number or QR), office (Phase 2)
 ```
 
 `test/` mirrors `lib/` one-to-one.
@@ -75,15 +75,18 @@ application's progress step by step, and read the messages it generates.
 | Apply | Config-driven form for the 4 citizen-facing registers |
 | Track | My applications, status, SLA, step-by-step progress |
 | Messages | Simulated SMS inbox with unread badge |
+| Pay | Mock gateway, success and failure, one gapless receipt per payment |
+| Certificate | A4 widget filled from the register's `CertificateSpec`, exported as PNG |
+| যাচাই | Public check by typed number or QR scan: বৈধ / মেয়াদোত্তীর্ণ / বাতিল |
 | Notices, about | Built |
 | ডেমো রিসেট | Wipes and regenerates today's dataset |
 | Office desks | Each of the ten gets its own shell, tabs and inbox spec; the screens behind them are Phase 2 |
 
-Still to build, in rough order: the mock payment gateway, the printable
-certificate and licence (as a widget exported to PNG — see the `pdf` warning
-above), QR verification, holding tax lookup and payment, and the star rating on
-a finished service. Holding tax and verification are registered as labelled
-placeholders so nothing dead-ends.
+Still to build, in rough order: holding tax lookup and payment, the star rating
+on a finished service, tracking by number without signing in, photo capture on a
+complaint, and the printable **licence** (the certificate sheet is the template
+— see the `pdf` warning above). Holding tax is registered as a labelled
+placeholder so nothing dead-ends.
 
 ## Develop
 

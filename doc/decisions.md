@@ -91,6 +91,27 @@ check it is slow and tells you less. The test covers every role against every
 route, including that no redirect target itself redirects — which at runtime is
 a frozen app rather than an error.
 
+## A certificate's QR carries the whole record, and the record still wins
+
+There is no server, so a QR holding an id would be unverifiable on the phone
+that scanned it — which is the only phone that matters, since the person
+checking a certificate is usually not the person who holds it. So the QR carries
+the readable fields themselves (`ln`, `bn`, `on`, `vu`, `w`), and
+`subjectFromQr` can produce a verdict with no data of its own.
+
+The cost is that a QR cannot know it was cancelled after it was printed. So
+`VerifyScreen` looks the number up in this device's own records **first** and
+only falls back to the query string when nothing matches, and
+`VerificationSubject.fromRecord` is false on that fallback so the screen can say
+where the answer came from. `verdictAt` checks `cancellation` before it checks
+any date, for the same reason: a cancelled certificate reading বৈধ is the worst
+single failure this demo can have, and there is a test named after it.
+
+`readScannedCode` is what keeps the camera out of that judgement. It decides
+only whether the raw string is one of our verify URLs or just a number, and the
+verdict is reached in `domain/rules/verification.dart` either way — one place
+where a document is judged, whether its number was typed or scanned.
+
 ## Known gap: widget tests that drive the router
 
 A widget test file that boots the app and signs in was written and then
